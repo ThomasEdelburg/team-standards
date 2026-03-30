@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # -- Pre-commit (Secrets + Format-Check) --
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pre-commit checks
+        uses: pre-commit/action@v3.0.1
+
+      # -- Stack-Erkennung --
+      - name: Detect stack
+        id: stack
+        run: |
+          if [ -f "package.json" ]; then echo "stack=node" >> $GITHUB_OUTPUT
+          elif [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then echo "stack=python" >> $GITHUB_OUTPUT
+          else echo "stack=unknown" >> $GITHUB_OUTPUT
+          fi
+
+      # -- Node / TypeScript --
+      - uses: actions/setup-node@v4
+        if: steps.stack.outputs.stack == 'node'
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install (Node)
+        if: steps.stack.outputs.stack == 'node'
+        run: npm ci
+
+      - name: Lint (Node)
+        if: steps.stack.outputs.stack == 'node'
+        run: npm run lint
+
+      - name: Test + Coverage (Node)
+        if: steps.stack.outputs.stack == 'node'
+        run: npm run test:coverage
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+
+      - name: Coverage Gate (Node)
+        if: steps.stack.outputs.stack == 'node'
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | node -e "
+            const d=require('fs').readFileSync('/dev/stdin','utf8');
+            const j=JSON.parse(d);
+            console.log(j.total.lines.pct);
+          ")
+          echo "Coverage: $COVERAGE%"
+          node -e "if($COVERAGE < 90) { console.error('Coverage $COVERAGE% < 90%'); process.exit(1); }"
+
+      # -- Python --
+      - uses: actions/setup-python@v5
+        if: steps.stack.outputs.stack == 'python'
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install (Python)
+        if: steps.stack.outputs.stack == 'python'
+        run: |
+          pip install uv
+          uv sync --all-extras
+
+      - name: Lint (Python)
+        if: steps.stack.outputs.stack == 'python'
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Test + Coverage (Python)
+        if: steps.stack.outputs.stack == 'python'
+        run: uv run pytest --cov --cov-fail-under=90 --cov-report=xml
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+
+      # -- Security Scan --
+      - name: Dependency Audit (Node)
+        if: steps.stack.outputs.stack == 'node'
+        run: npm audit --audit-level=high
+        continue-on-error: false
+
+      - name: Dependency Audit (Python)
+        if: steps.stack.outputs.stack == 'python'
+        run: pip install pip-audit && pip-audit
+        continue-on-error: false

@@ -27,6 +27,7 @@ git clone https://github.com/ThomasEdelburg/team-standards.git ~/.claude
 | `scripts/commit-gate-hook.py` | Pre-commit quality gate |
 | `scripts/techstack-check.py` | Weekly toolchain health check |
 | `commands/*.md` | Slash commands (/plan, /implement, /review, /test, /release, etc.) |
+| `templates/project/` | Project template for `/new-project` (CLAUDE.md, CI/CD, docs, Makefile, TODO) |
 
 ## What's NOT included (personal, stays local)
 

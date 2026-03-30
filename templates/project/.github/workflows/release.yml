@@ -1,0 +1,113 @@
+name: Release (Prod)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (z.B. 1.2.3)"
+        required: true
+      confirm:
+        description: 'Bestätigung: "ja" eingeben'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Confirm Release
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "ja" ]; then
+            echo "Abgebrochen: Bestätigung fehlt"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect stack
+        id: stack
+        run: |
+          if [ -f "package.json" ]; then echo "stack=node" >> $GITHUB_OUTPUT
+          elif [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then echo "stack=python" >> $GITHUB_OUTPUT
+          else echo "stack=unknown" >> $GITHUB_OUTPUT
+          fi
+
+      # -- Tests nochmal (Gate) --
+      - uses: actions/setup-node@v4
+        if: steps.stack.outputs.stack == 'node'
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci && npm run test:coverage
+        if: steps.stack.outputs.stack == 'node'
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+
+      - uses: actions/setup-python@v5
+        if: steps.stack.outputs.stack == 'python'
+        with:
+          python-version: "3.12"
+
+      - run: pip install uv && uv sync && uv run pytest --cov --cov-fail-under=90
+        if: steps.stack.outputs.stack == 'python'
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+
+      # -- CHANGELOG generieren --
+      - name: Generate Changelog
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          DATE=$(date +%Y-%m-%d)
+          echo "## [$VERSION] - $DATE" > /tmp/new_changelog.md
+          echo "" >> /tmp/new_changelog.md
+          git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD \
+            --pretty=format:"- %s (%h)" >> /tmp/new_changelog.md
+          echo "" >> /tmp/new_changelog.md
+          cat /tmp/new_changelog.md CHANGELOG.md > /tmp/merged.md
+          mv /tmp/merged.md CHANGELOG.md
+          git config user.email "ci@github-actions"
+          git config user.name "GitHub Actions"
+          git add CHANGELOG.md
+          git commit -m "chore: release $VERSION"
+
+      # -- Backup vor Prod --
+      - name: Backup (Prod)
+        run: |
+          echo "BACKUP_SCRIPT: Hier Prod-Backup-Skript eintragen"
+        env:
+          DEPLOY_KEY: ${{ secrets.PROD_DEPLOY_KEY }}
+
+      # -- Prod Deploy --
+      - name: Deploy to Prod
+        run: |
+          echo "DEPLOY_SCRIPT: Hier Prod-Deploy-Skript eintragen"
+        env:
+          DEPLOY_KEY: ${{ secrets.PROD_DEPLOY_KEY }}
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+
+      # -- Smoke Tests Prod --
+      - name: Smoke Tests (Prod)
+        run: |
+          sleep 15
+          curl -f ${{ secrets.PROD_APP_URL }}/health || exit 1
+          echo "Smoke Test Prod: OK"
+
+      # -- Git Tag + GitHub Release --
+      - name: Tag & Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          git tag "v$VERSION"
+          git push origin main --tags
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes-file /tmp/new_changelog.md \
+            --repo ${{ github.repository }}

@@ -1,0 +1,50 @@
+# Secrets & Credentials (NIEMALS committen)
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets/
+credentials/
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.uv/
+
+# Build & Output
+dist/
+build/
+*.egg-info/
+.next/
+out/
+
+# Test & Coverage
+.coverage
+coverage/
+htmlcov/
+.pytest_cache/
+.vitest/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
+
+# Claude local settings
+.claude/settings.local.json
