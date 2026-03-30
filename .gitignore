@@ -1,0 +1,43 @@
+# ============================================
+# Personal / runtime files — NOT shared
+# ============================================
+
+# Credentials & auth
+.credentials.json
+mcp-needs-auth-cache.json
+
+# Session & history (personal, large)
+history.jsonl
+sessions/
+session-env/
+
+# Runtime caches
+cache/
+paste-cache/
+file-history/
+shell-snapshots/
+plugins/
+
+# Logs (generated locally)
+logs/
+
+# IDE integration (personal)
+ide/
+
+# Personal overrides (each user configures locally)
+settings.local.json
+
+# Backups (generated locally)
+backups/
+
+# Tasks (session-specific)
+tasks/
+
+# Per-project memory (personal context, not shared)
+projects/
+
+# Policy limits (account-specific)
+policy-limits.json
+
+# Techstack requirements (project-specific, lives in project repo)
+techstack-requirements.json

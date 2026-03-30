@@ -1,0 +1,95 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(gh:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(git stash:*)",
+      "Bash(git tag:*)",
+      "Bash(git worktree:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(pnpm:*)",
+      "Bash(dotnet:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pytest:*)",
+      "Bash(vitest:*)",
+      "Bash(playwright:*)",
+      "Bash(ruff:*)",
+      "Bash(eslint:*)",
+      "Bash(prettier:*)",
+      "Bash(docker build:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker-compose:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(make:*)",
+      "Bash(curl:*)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(rm -rf:*)",
+      "Bash(docker system prune:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/scripts/session-start.py\" || python \"$HOME/.claude/scripts/session-start.py\"",
+            "timeout": 30,
+            "statusMessage": "Initializing session..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import sys, json, os, subprocess; d = json.load(sys.stdin); f = d.get('tool_input', {}).get('file_path', ''); ext = os.path.splitext(f)[1] if f and os.path.exists(f) else ''; cmds = {'.py': ['ruff', 'check', '--fix', f], '.ts': ['npx', 'prettier', '--write', f], '.tsx': ['npx', 'prettier', '--write', f], '.js': ['npx', 'prettier', '--write', f], '.jsx': ['npx', 'prettier', '--write', f], '.css': ['npx', 'prettier', '--write', f]}; cmd = cmds.get(ext); (cmd and subprocess.run(cmd, capture_output=True)) if cmd else None\" 2>/dev/null || true",
+            "statusMessage": "Auto-linting...",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import sys, json, os, datetime; d = json.load(sys.stdin); log_dir = os.path.expanduser('~/.claude/logs'); os.makedirs(log_dir, exist_ok=True); open(os.path.join(log_dir, 'corrections.jsonl'), 'a').write(json.dumps({'ts': datetime.datetime.now().isoformat(), 'type': 'tool_failure', 'tool': d.get('tool_name', ''), 'error': str(d.get('tool_response', ''))[:300]}) + chr(10))\" 2>/dev/null || true",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
