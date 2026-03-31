@@ -1,72 +1,72 @@
-# /reflect - Session-Analyse & Standards-Verbesserung
+# /reflect - Session Analysis & Standards Improvement
 
-Analysiert die aktuelle Session auf vergessene/ignorierte Regeln und schlägt konkrete
-Verbesserungen an CLAUDE.md, memory/*.md oder commands/*.md vor.
+Analyzes the current session for forgotten/ignored rules and proposes concrete
+improvements to CLAUDE.md, memory/*.md, or commands/*.md.
 
-## Wann aufrufen
-- Vor einem Commit nach komplexen oder problematischen Sessions
-- Wenn User Korrektionen machen musste ("nicht so", "das war falsch", "vergessen")
-- Optional am Ende jeder Session als Lernschritt
+## When to Invoke
+- Before a commit after complex or problematic sessions
+- When the user had to make corrections ("nicht so" / "not like that", "das war falsch" / "that was wrong", "vergessen" / "forgot")
+- Optionally at the end of any session as a learning step
 
-## Ablauf
+## Workflow
 
-### 1. Korrektions-Log lesen
-Lese `~/.claude/logs/corrections.jsonl` (falls vorhanden) - enthält automatisch
-geloggte Tool-Fehler und manuell geloggte Korrektionen via `/note`.
+### 1. Read Correction Log
+Read `~/.claude/logs/corrections.jsonl` (if present) - contains automatically
+logged tool errors and manually logged corrections via `/note`.
 
-### 2. Session analysieren
-Reflektiere über diese Session:
-- Welche Regeln aus CLAUDE.md / memory/*.md wurden vergessen oder ignoriert?
-- Wo musste der User korrigieren?
-- Welche Missverständnisse gab es?
-- Welche Erwartungen wurden nicht erfüllt?
+### 2. Analyze Session
+Reflect on this session:
+- Which rules from CLAUDE.md / memory/*.md were forgotten or ignored?
+- Where did the user have to correct?
+- What misunderstandings occurred?
+- Which expectations were not met?
 
-### 3. Muster identifizieren
-Kategorisiere Probleme:
-| Kategorie | Beispiel |
-|-----------|---------|
-| Regel vergessen | Review-Checkliste übersprungen |
-| Regel unklar | "Admin Debug Mode" - unklar wann aktiv |
-| Regel fehlend | Verhalten nicht definiert für Situation X |
-| Regel widersprüchlich | Standard A vs. Standard B |
-| Werkzeug-Fehler | Tool-Permission, File not read etc. |
+### 3. Identify Patterns
+Categorize problems:
+| Category | Example |
+|----------|---------|
+| Rule forgotten | Review checklist skipped |
+| Rule unclear | "Admin Debug Mode" - unclear when active |
+| Rule missing | Behavior not defined for situation X |
+| Rule contradictory | Standard A vs. Standard B |
+| Tool error | Tool permission, file not read, etc. |
 
-### 4. Verbesserungen vorschlagen
+### 4. Propose Improvements
 
-Für jedes Problem: konkreter Verbesserungsvorschlag mit Zieldatei und Änderung.
+For each problem: concrete improvement proposal with target file and change.
 
-**Output-Format:**
+**Output Format:**
 ```
-## Session-Analyse
+## Session Analysis
 
-### Probleme diese Session
-| # | Problem | Kategorie | Häufigkeit |
-|---|---------|-----------|------------|
-| 1 | Review-Checkliste übersprungen | Regel vergessen | 2x |
+### Problems This Session
+| # | Problem | Category | Frequency |
+|---|---------|----------|-----------|
+| 1 | Review checklist skipped | Rule forgotten | 2x |
 | 2 | ... | ... | ... |
 
-### Vorgeschlagene Verbesserungen
-**[1] ~/.claude/CLAUDE.md - Zeile X**
-Alt: "..."
-Neu: "..."
-Begründung: ...
+### Proposed Improvements
+**[1] ~/.claude/CLAUDE.md - Line X**
+Old: "..."
+New: "..."
+Reason: ...
 
 **[2] ~/.claude/memory/standards.md**
-Ergänzen nach "## UI/Frontend":
+Add after "## UI/Frontend":
 "..."
 
-### Tool-Fehler (aus corrections.jsonl)
-- [Timestamp] Tool: X, Fehler: Y
+### Tool Errors (from corrections.jsonl)
+- [Timestamp] Tool: X, Error: Y
 
-→ Änderungen anwenden? (ja / nur Nr. X,Y / nein)
+-> Apply changes? (yes / "ja" / only #X,Y / "nur Nr. X,Y" / no / "nein")
 ```
 
-### 5. Anwenden nach User-Freigabe
-- Bei "ja": alle Änderungen direkt anwenden
-- Bei "nur Nr. X,Y": nur die genannten anwenden
-- Korrektions-Log nach Analyse archivieren (umbenennen mit Datum)
+### 5. Apply After User Approval
+- On "yes" / "ja": apply all changes directly
+- On "only #X,Y" / "nur Nr. X,Y": apply only the listed ones
+- Archive correction log after analysis (rename with date)
 
 ---
 
-## Micro-Loop (für jeden Schritt)
-Scan → Plan → Act → Reflect (funktioniert? sonst: stoppen + melden)
+## Micro-Loop (for each step)
+Scan -> Plan -> Act -> Reflect (does it work? if not: stop + report)

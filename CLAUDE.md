@@ -20,11 +20,11 @@ Detect intent and automatically invoke the matching command — no need for the 
 
 | When user says... | Command |
 |---|---|
-| "plane", "neue task", "was müssen wir tun", "lass uns planen" | `/plan` |
-| "lege los", "starte", "implementiere", "fang an" | `/implement` |
-| "teste", "tests laufen lassen", "check die tests", "alles grün?" | `/test` |
-| "review", "prüf den code", "ist der code ok" | `/review` |
-| "release", "deploy", "veröffentlichen", "auf prod" | `/release` |
+| "plan", "new task", "what do we need to do" / "plane", "neue task", "was müssen wir tun", "lass uns planen" | `/plan` |
+| "let's go", "start", "implement", "begin" / "lege los", "starte", "implementiere", "fang an" | `/implement` |
+| "test", "run tests", "all green?" / "teste", "tests laufen lassen", "check die tests", "alles grün?" | `/test` |
+| "review", "check the code", "is the code ok" / "prüf den code", "ist der code ok" | `/review` |
+| "release", "deploy", "publish", "to prod" / "veröffentlichen", "auf prod" | `/release` |
 
 ## Core Rules (always active)
 

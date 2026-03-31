@@ -1,42 +1,44 @@
-# /test - Test-Suite ausführen
+# /test - Run Test Suite
 
-Führt alle Tests aus und gibt einen vollständigen Status-Report aus.
+Runs all tests and outputs a full status report.
 
-## Ablauf
+**Trigger words:** "teste", "tests laufen lassen", "check die tests", "alles gruen?", "test", "run tests", "check tests", "all green?"
 
-1. Stack erkennen (package.json / pyproject.toml / etc.)
-2. Tests + Linting + Formatting ausführen (stack-spezifische Tools)
-3. Coverage-Report generieren
-4. Ergebnis als kompakte Tabelle ausgeben
+## Workflow
 
-## Test-Reihenfolge
+1. Detect stack (package.json / pyproject.toml / etc.)
+2. Run tests + linting + formatting (stack-specific tools)
+3. Generate Coverage report
+4. Output result as compact table
+
+## Test Order
 1. Linting + Formatting
-2. Unit Tests (mit Coverage)
-3. Integration Tests (echte Test-DB)
-4. E2E Tests (falls konfiguriert)
+2. Unit Tests (with Coverage)
+3. Integration Tests (real test DB)
+4. E2E Tests (if configured)
 
-## Output-Format
+## Output Format
 
 ```
-| Test-Art        | Status     | Coverage | Dauer  |
-|-----------------|------------|----------|--------|
-| Linting         | ✓ / ✗      | -        | Xs     |
-| Unit Tests      | ✓ / ✗      | XX%      | Xs     |
-| Integration     | ✓ / ✗      | XX%      | Xs     |
-| E2E             | ✓ / ✗      | -        | Xs     |
-| Gesamt Coverage | -          | XX%      | -      |
+| Test Type       | Status     | Coverage | Duration |
+|-----------------|------------|----------|----------|
+| Linting         | pass/fail  | -        | Xs       |
+| Unit Tests      | pass/fail  | XX%      | Xs       |
+| Integration     | pass/fail  | XX%      | Xs       |
+| E2E             | pass/fail  | -        | Xs       |
+| Total Coverage  | -          | XX%      | -        |
 ```
 
-## Bei Fehlern
-- Fehlermeldung vollständig zitieren - nicht kürzen
-- Ursache identifizieren
-- Lösung vorschlagen, aber NICHT automatisch Code ändern
+## On Errors
+- Quote error messages in full - never truncate
+- Identify root cause
+- Suggest a fix, but do NOT automatically change code
 
-## Coverage-Gate
-Wenn Gesamt-Coverage < 90%: fehlende Tests identifizieren und schreiben.
-Kein Commit bis Coverage ≥ 90%.
+## Coverage Gate
+If total Coverage < 90%: identify missing tests and write them.
+No commit until Coverage >= 90%.
 
 ---
 
-## Micro-Loop (für jeden Schritt)
-Scan (was existiert?) → Plan (was genau?) → Act → Reflect (funktioniert? sonst: stoppen + melden)
+## Micro-Loop (for each step)
+Scan (what exists?) -> Plan (what exactly?) -> Act -> Reflect (does it work? if not: stop + report)

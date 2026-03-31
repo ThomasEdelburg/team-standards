@@ -1,26 +1,28 @@
-# /new-project - Neues Package/App im Mono-Repo anlegen
+# /new-project - Create New Package/App in the Mono-Repo
 
-Legt ein neues Package oder eine App als Unterverzeichnis im Mono-Repo an.
+Creates a new package or app as a subdirectory in the mono-repo.
 
-## Ablauf
+**Trigger words:** "neues Projekt", "neues Package", "neue App", "new project", "new package", "new app", "create project"
 
-1. Package-Name und Typ erfragen falls nicht angegeben (app / service / package / lib)
-2. Zielverzeichnis bestimmen:
+## Workflow
+
+1. Ask for package name and type if not provided (app / service / package / lib)
+2. Determine target directory:
    - Apps: `apps/[name]`
    - Services: `services/[name]`
    - Packages/Libs: `packages/[name]`
-3. Template kopieren von `~/.claude/templates/project/`
-4. Platzhalter `{{PROJECT_NAME}}` und `{{DATE}}` ersetzen
-5. Package-spezifische `.claude/CLAUDE.md` anlegen mit Stack-Informationen
-6. Pre-commit Hooks prüfen (sollten bereits im Root aktiv sein)
-7. `TODO.md` im Package anlegen
-8. Ersten Commit erstellen: `feat([name]): initial package structure`
+3. Copy template from `~/.claude/templates/project/`
+4. Replace placeholders `{{PROJECT_NAME}}` and `{{DATE}}`
+5. Create package-specific `.claude/CLAUDE.md` with stack information
+6. Check pre-commit hooks (should already be active in root)
+7. Create `TODO.md` in the package
+8. Create initial commit: `feat([name]): initial package structure`
 
-## Mono-Repo Struktur
+## Mono-Repo Structure
 ```
 repo-root/
-├── .github/workflows/     # Gemeinsame CI/CD
-├── .gitignore             # Gemeinsam
+├── .github/workflows/     # Shared CI/CD
+├── .gitignore             # Shared
 ├── .pre-commit-config.yaml
 ├── apps/
 │   └── [name]/
@@ -36,14 +38,14 @@ repo-root/
     └── [name]/
 ```
 
-## GitHub Actions Secrets (einmalig pro Repo setzen)
+## GitHub Actions Secrets (set once per repo)
 ```bash
 gh secret set TEST_DATABASE_URL --body "postgresql://..." --repo [repo]
 gh secret set TEST_APP_URL      --body "https://test.example.com" --repo [repo]
 gh secret set DEPLOY_KEY        --body "..." --repo [repo]
 ```
 
-## Nächste Schritte nach Erstellung
-1. Stack in `[package]/.claude/CLAUDE.md` eintragen
-2. Erste Task in `[package]/TODO.md` anlegen (`/plan`)
-3. Entwicklung starten wenn Planung fertig (`/implement`)
+## Next Steps After Creation
+1. Enter stack in `[package]/.claude/CLAUDE.md`
+2. Create first task in `[package]/TODO.md` (`/plan`)
+3. Start development when planning is complete (`/implement`)

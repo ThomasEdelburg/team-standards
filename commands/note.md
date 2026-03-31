@@ -1,38 +1,39 @@
-# /note - Korrektur manuell loggen
+# /note - Manually Log a Correction
 
-Loggt eine Korrektur oder ein Problem manuell in `~/.claude/logs/corrections.jsonl`.
-Wird von `/reflect` ausgewertet.
+Logs a correction or problem manually to `~/.claude/logs/corrections.jsonl`.
+Evaluated by `/reflect`.
 
-## Verwendung
+## Usage
 
 ```
-/note [Beschreibung des Problems]
+/note [Description of the problem]
 ```
 
-**Beispiele:**
-- `/note Review-Checkliste übersprungen`
-- `/note Falsches Tool verwendet - Read statt Bash cat`
-- `/note Regel aus standards.md ignoriert: kein SELECT *`
-- `/note User-Erwartung falsch verstanden bei Deployment`
+**Examples:**
+- `/note Review checklist skipped`
+- `/note Wrong tool used - Read instead of Bash cat`
+- `/note Rule from standards.md ignored: no SELECT *`
+- `/note User expectation misunderstood during deployment`
+- `/note Review-Checkliste uebersprungen` (German also works)
 
-## Was geloggt wird
+## What Gets Logged
 - Timestamp
-- Session-ID (aus Umgebung)
-- Nachricht (User-Input)
-- Kontext: aktuelle Aufgabe / letztes Tool
+- Session ID (from environment)
+- Message (user input)
+- Context: current task / last tool
 
-## Ablauf
+## Workflow
 
-1. Lese Argument (Text nach `/note`)
-2. Erstelle Log-Eintrag als JSON
-3. Schreibe in `~/.claude/logs/corrections.jsonl` (append)
-4. Bestätige: "Notiert: [Text]"
+1. Read argument (text after `/note`)
+2. Create log entry as JSON
+3. Write to `~/.claude/logs/corrections.jsonl` (append)
+4. Confirm: "Noted: [Text]" / "Notiert: [Text]"
 
-## Log-Format
+## Log Format
 ```json
-{"ts": "2026-03-30T10:30:00", "type": "manual", "session": "abc123", "msg": "Review-Checkliste übersprungen", "context": "nach git commit"}
+{"ts": "2026-03-30T10:30:00", "type": "manual", "session": "abc123", "msg": "Review checklist skipped", "context": "after git commit"}
 ```
 
-## Hinweis
-Auch ohne `/note` werden Tool-Fehler automatisch geloggt via `PostToolUseFailure` Hook.
-`/reflect` liest beide Quellen.
+## Note
+Even without `/note`, tool errors are automatically logged via `PostToolUseFailure` hook.
+`/reflect` reads both sources.

@@ -1,58 +1,60 @@
-# /implement - Implementierung starten
+# /implement - Start Implementation
 
-Startet den vollständigen Implementierungs-Workflow mit parallelen Agents.
-Nur ausführen wenn Planung abgeschlossen und User-Freigabe erteilt wurde.
+Starts the full implementation workflow with parallel agents.
+Only execute when planning is complete and user approval has been granted.
 
-## Voraussetzungen prüfen
-- [ ] TODO.md enthält fertige Planung mit Abnahmekriterien
-- [ ] Contracts/Interfaces als Dateien definiert (oder Contract Agent ausführen)
-- [ ] User hat explizit "lege los" oder /implement aufgerufen
+**Trigger words:** "lege los", "starte", "implementiere", "fang an", "let's go", "start", "implement", "begin"
 
-## Phase 1 - Contract Agent (sequenziell, blockiert Phase 2)
+## Check Prerequisites
+- [ ] TODO.md contains completed planning with acceptance criteria
+- [ ] Contracts/Interfaces defined as files (or run Contract Agent)
+- [ ] User has explicitly said "lege los" / "let's go" or invoked /implement
 
-Starte Agent mit Fokus:
-- DB-Schema + Migrations definieren
-- API-Spec (OpenAPI) erstellen
-- Interfaces/Types/Contracts als Dateien ablegen
+## Phase 1 - Contract Agent (sequential, blocks Phase 2)
+
+Start agent with focus:
+- Define DB schema + migrations
+- Create API spec (OpenAPI)
+- Store interfaces/types/contracts as files
 - Worktree: `feature/[task-id]-contracts`
 
-Warte auf Abschluss bevor Phase 2 startet.
+Wait for completion before Phase 2 starts.
 
-## Phase 2 - Agent Teams parallel (3 Teammates)
+## Phase 2 - Agent Teams in Parallel (3 Teammates)
 
-Agent Teams nutzen (CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1):
-Teammates kommunizieren direkt miteinander über geteilte Task-Liste.
+Use Agent Teams (CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1):
+Teammates communicate directly with each other via shared task list.
 
 **Backend Teammate** (Worktree: `feature/[task-id]-backend`):
-- Zuständigkeit: DB-Layer + API-Endpoints
-- Implementiert gegen Contracts aus Phase 1
-- Standards: 4-Tier, ORM, REST, Error Handling, Logging
-- Meldet an Frontend Teammate wenn API-Endpoints bereit
+- Responsibility: DB layer + API endpoints
+- Implements against contracts from Phase 1
+- Standards: 4-tier, ORM, REST, error handling, logging
+- Notifies Frontend Teammate when API endpoints are ready
 
 **Frontend Teammate** (Worktree: `feature/[task-id]-frontend`):
-- Zuständigkeit: UI-Komponenten + State Management
-- Wartet auf API-Bereitschaft vom Backend Teammate
-- Standards: Tailwind, Loading/Error/Empty States, i18n, WCAG AA
+- Responsibility: UI components + state management
+- Waits for API readiness from Backend Teammate
+- Standards: Tailwind, loading/error/empty states, i18n, WCAG AA
 
-**Unit-Test Teammate** (Worktree: `feature/[task-id]-unit-tests`):
-- Zuständigkeit: Unit + Range/Boundary Tests gegen Contracts
-- Arbeitet parallel zu Backend/Frontend gegen Interfaces
-- Ziel: 90% Coverage der Business Logic
+**Unit Test Teammate** (Worktree: `feature/[task-id]-unit-tests`):
+- Responsibility: Unit + range/boundary tests against contracts
+- Works in parallel with Backend/Frontend against interfaces
+- Goal: 90% Coverage of business logic
 
-## Phase 3 - Agent Teams parallel (nach Phase 2)
+## Phase 3 - Agent Teams in Parallel (after Phase 2)
 
-**Integration-Test Teammate** (Worktree: `feature/[task-id]-integration-tests`):
-- API + DB Integration Tests mit echter Test-DB
-- Keine Mocks auf DB-Ebene
+**Integration Test Teammate** (Worktree: `feature/[task-id]-integration-tests`):
+- API + DB integration tests with real test DB
+- No mocks at DB level
 
-**E2E-Test Teammate** (Worktree: `feature/[task-id]-e2e-tests`):
-- Komplette Workflows im Browser (Playwright oder Cypress)
-- Visual Regression, Accessibility Tests
+**E2E Test Teammate** (Worktree: `feature/[task-id]-e2e-tests`):
+- Complete workflows in browser (Playwright or Cypress)
+- Visual regression, accessibility tests
 
-## Abschluss
-Nach allen Agents: /review aufrufen
+## Completion
+After all agents finish: invoke /review
 
 ---
 
-## Micro-Loop (für jeden Schritt)
-Scan (was existiert?) → Plan (was genau?) → Act → Reflect (funktioniert? sonst: stoppen + melden)
+## Micro-Loop (for each step)
+Scan (what exists?) -> Plan (what exactly?) -> Act -> Reflect (does it work? if not: stop + report)

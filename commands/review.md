@@ -1,43 +1,45 @@
 # /review - Code Review
 
-Führt den vollständigen Code Review vor einem Commit durch.
-Gibt Bewertung als kompakte Tabelle aus.
+Executes the full code review before a commit.
+Outputs the assessment as a compact table.
 
-## Ablauf
+**Trigger words:** "review", "pruef den code", "ist der code ok", "check the code", "is the code ok"
 
-1. Geänderte Dateien identifizieren (git diff)
-2. Review-Checkliste aus `~/.claude/memory/checklists.md` durchgehen
-3. Kleine Verstöße direkt korrigieren (ohne Rückfrage)
-4. Architektur-Entscheidungen / Breaking Changes → User vorlegen
-5. Cleanup-Checkliste prüfen (bei komplexen Änderungen)
-6. /test aufrufen - alle Tests müssen grün sein
-7. /reflect aufrufen (bei komplexen Sessions oder wenn Korrektionen nötig waren)
-8. Ergebnis ausgeben
+## Workflow
 
-## Output-Format
+1. Identify changed files (git diff)
+2. Go through the review checklist from `~/.claude/memory/checklists.md`
+3. Fix minor violations directly (without asking)
+4. Present architecture decisions / breaking changes to user
+5. Check cleanup checklist (for complex changes)
+6. Invoke /test - all tests must be green
+7. Invoke /reflect (for complex sessions or when corrections were needed)
+8. Output result
+
+## Output Format
 
 ```
 ## Code Review - [Branch/Task]
 
-| Prüfpunkt              | Status | Aktion         |
-|------------------------|--------|----------------|
-| Dateigröße             | ✓      | -              |
-| Zirkuläre Imports      | ✓      | -              |
-| ...                    | ...    | ...            |
+| Check Point              | Status | Action         |
+|--------------------------|--------|----------------|
+| File size                | pass   | -              |
+| Circular imports         | pass   | -              |
+| ...                      | ...    | ...            |
 
-**Direkt korrigiert:** [Liste der Auto-Fixes]
-**Für User:** [Liste der Entscheidungen die User treffen muss]
-**Tests:** ✓ grün / ✗ fehlgeschlagen
+**Auto-fixed:** [List of auto-fixes]
+**For user:** [List of decisions the user must make]
+**Tests:** pass / fail
 **Coverage:** XX%
 
-→ Bereit für Commit: JA / NEIN
+-> Ready for commit: YES / NO
 ```
 
-## Commit-Gate
-Nur wenn alle Punkte ✓ und Coverage ≥ 90%:
-Conventional Commit erstellen (feat: / fix: / BREAKING CHANGE:)
+## Commit Gate
+Only when all checks pass and Coverage >= 90%:
+Create Conventional Commit (feat: / fix: / BREAKING CHANGE:)
 
 ---
 
-## Micro-Loop (für jeden Schritt)
-Scan (was existiert?) → Plan (was genau?) → Act → Reflect (funktioniert? sonst: stoppen + melden)
+## Micro-Loop (for each step)
+Scan (what exists?) -> Plan (what exactly?) -> Act -> Reflect (does it work? if not: stop + report)

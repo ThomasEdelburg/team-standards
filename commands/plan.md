@@ -1,30 +1,32 @@
-# /plan - Planungsphase
+# /plan - Planning Phase
 
-Führe die vollständige Planungsphase für die aktuelle oder angegebene Task durch.
+Execute the full planning phase for the current or specified task.
 
-## Ablauf
+**Trigger words:** "plane", "neue task", "was muessen wir tun", "lass uns planen", "plan", "new task", "what do we need to do", "let's plan"
 
-1. Lies `~/.claude/memory/standards.md`, `~/.claude/memory/workflow.md`, `~/.claude/memory/checklists.md`
-2. Lies die aktuelle `TODO.md` im Projektverzeichnis (falls vorhanden)
-3. Führe die 11 Planungspunkte durch (aus CLAUDE.md)
-4. Generiere automatisch Abnahmekriterien für die Task
-5. Erstelle oder aktualisiere den Task-Eintrag in `TODO.md`
-6. Warte auf explizite User-Freigabe ("lege los") bevor du mit Coding beginnst
+## Workflow
 
-## Task-Format in TODO.md
+1. Read `~/.claude/memory/standards.md`, `~/.claude/memory/workflow.md`, `~/.claude/memory/checklists.md`
+2. Read the current `TODO.md` in the project directory (if present)
+3. Execute the 11 planning points (from CLAUDE.md)
+4. Auto-generate acceptance criteria for the task
+5. Create or update the task entry in `TODO.md`
+6. Wait for explicit user approval ("lege los" / "let's go" / "start implementing") before starting to code
+
+## Task Format in TODO.md
 
 ```
-## Task #XXXX: [Titel]
+## Task #XXXX: [Title]
 **Status:** open
-**Abnahmekriterien:**
-- [ ] [Funktionale Kriterien - aus Beschreibung abgeleitet]
-- [ ] Tests ≥ 90% Coverage
-- [ ] Migration/Patch vorhanden und getestet
-- [ ] Code-Review bestanden
-- [ ] Dokumentation aktualisiert
-- [ ] Performance-Ziele erfüllt
+**Acceptance Criteria:**
+- [ ] [Functional criteria - derived from description]
+- [ ] Tests >= 90% Coverage
+- [ ] Migration/Patch present and tested
+- [ ] Code review passed
+- [ ] Documentation updated
+- [ ] Performance goals met
 ```
 
-## Kontext-Check
-Bewerte ob der Kontext ausreichend/lückenhaft/unklar ist.
-Bei lückenhaft: gezielt nachfragen bevor du planst.
+## Context Check
+Evaluate whether the context is sufficient / incomplete / unclear.
+If incomplete: ask targeted questions before planning.
