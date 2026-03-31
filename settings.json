@@ -55,6 +55,19 @@
     "defaultMode": "acceptEdits"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/scripts/gdpr-scan.py\" || python \"$HOME/.claude/scripts/gdpr-scan.py\"",
+            "timeout": 15,
+            "statusMessage": "GDPR scan..."
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
